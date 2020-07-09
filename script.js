@@ -18,7 +18,7 @@ var bracket = {
     x: canvas.width * 0.925,
     y: canvas.height * 0.25,
     width: canvas.width * 0.025,
-    height: canvas.height * 0.5
+    height: canvas.height * 0.25
   }
 };
 
@@ -31,7 +31,11 @@ function draw(){
   background(colours.background);
   moveOnSides();
 
+  
+  //Pong ball
+  ellipse()
 
+  fill(0);
   //Left side bracket
   rect(bracket.left.x, bracket.left.y, bracket.left.width, bracket.left.height);
   //Right side bracket
@@ -50,6 +54,16 @@ function moveOnSides(){
       bracket.left.y = canvas.height - bracket.left.height;
     } else {
       bracket.left.y = mouseY;
+    }
+  }
+  else if(mouseX > canvas.width * 0.5 && mouseX < canvas.width){
+    if(mouseY <= 0){
+      bracket.right.y = 0;
+    }
+    else if(mouseY >= canvas.height - bracket.right.height){
+      bracket.right.y = canvas.height - bracket.right.height;
+    } else {
+      bracket.right.y = mouseY;
     }
   }
 }
