@@ -33,7 +33,8 @@ function draw(){
 
   
   //Pong ball
-  ellipse()
+  fill(100);
+  ellipse(canvas.width * 0.5, canvas.height * 0.5, canvas.width * 0.05);
 
   fill(0);
   //Left side bracket
