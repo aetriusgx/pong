@@ -1,6 +1,6 @@
 /*
 *   CSSIx Mini Project 1
-*   Team Members: Jason Hernandez, Josue Santos
+*   Team 6
 *   Project Name: Pong
 *   Date: 7/10/20
 */
