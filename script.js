@@ -1,6 +1,6 @@
 /*
  *   CSSIx Mini Project 1
- *   Team Members: Jason Hernandez, Josue Santos
+ *   Team 6
  *   Project Name: Pong
  *   Date: 7/10/20
  */
@@ -52,7 +52,8 @@ var ballPos = {
 //Variables for detecting the status of things
 var presence = {
   ballIsSpawned: false,
-  scoreCounted: false
+  scoreCounted: false,
+  gameOver: false
 };
 
 //Variables for the starting text
@@ -148,16 +149,15 @@ function setup() {
 }
 
 function draw() {
-  try {
-    if (!loadedMusic.isPlaying()) {
-      //Start background music
-      console.log('bleh');
-      loadedMusic.play();
-      loadedMusic.setVolume(0.1);
-      loadedMusic.loop();
-    }
-  } catch (err) {
-    console.log(err);
+  if (!loadedMusic.isPlaying() && !presence.gameOver) {
+    //Start background music
+    console.log('bleh');
+    loadedMusic.play();
+    loadedMusic.setVolume(0.1);
+    loadedMusic.loop();
+  }
+  if(presence.gameOver){
+    loadedMusic.stop();
   }
 
   //Change the background to the background colour variable
@@ -223,6 +223,10 @@ function keyPressed() {
         ballPos.x = canvas.width * 0.5;
         ballPos.y = canvas.height * 0.5;
         ballPos.dia = canvas.width * 0.025;
+        if(presence.gameOver){
+          loadedMusic.play();
+          presence.gameOver = false;
+        }
       }
       //If the ball does exist then do this
       else {
@@ -308,6 +312,7 @@ function endGame() {
   fill(start.color.c, start.color.saturation, start.color.brightness);
   stroke(start.color.c, start.color.saturation, start.color.brightness);
   if (score.score1 == score.limit) {
+    presence.gameOver = true;
     start.color.c += 2;
     textSize(70);
     background(colours.background);
@@ -316,6 +321,7 @@ function endGame() {
     movementMoveY = 0;
   }
   if (score.score2 == score.limit) {
+    presence.gameOver = true;
     start.color.c += 2;
     textSize(70);
     background(colours.background);
