@@ -146,7 +146,7 @@ function keyPressed() {
         case ENTER:
             if(!status.ball){
                 status.ball = true;
-
+                
             } else {
                 status.ball = false;
                 background(colors.background);
