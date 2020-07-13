@@ -17,16 +17,4 @@ class Bracket {
     set y(y) {
         this.y = y
     }
-    get x() {
-        return this.x
-    }
-    get y() {
-        return this.y
-    }
-    get x() {
-        return this.x
-    }
-    get x() {
-        return this.x
-    }
 }
