@@ -58,18 +58,11 @@ let dialog = {
 };
 
 let canvas = {};
-let bracket = {};
-let divider = {};
-let ball = {};
 let text = {};
-let bounds = {};
 let loaded_sounds = [];
-let BracketHandler = {};
 let ScoreHandler = {};
 let TextHandler = {};
 let SoundHandler = {};
-let BallHandler = {};
-let Behavior = {};
 //End of predefined
 
 
@@ -87,26 +80,6 @@ function setup() {
     //Create new variables in the canvas object for height and width
     canvas.width = windowWidth;
     canvas.height = windowHeight;
-    //Create new variables for graphics
-    bracket.left = {};
-    bracket.left.width = windowWidth * 0.025;
-    bracket.left.height = windowHeight * 0.25;
-    bracket.left.x = windowWidth * 0.05;
-    bracket.left.y = windowHeight / 2 - bracket.left.height / 2;
-    bracket.right = {};
-    bracket.right.width = windowWidth * 0.025;
-    bracket.right.height = windowHeight * 0.25;
-    bracket.right.x = windowWidth * 0.95 - bracket.right.width;
-    bracket.right.y = windowHeight / 2 - bracket.right.height / 2;
-
-    bounds.left = windowWidth * 0.005;
-    bounds.right = windowWidth * 0.995;
-
-    ball.position = {};
-    ball.position.x = windowWidth * 0.5;
-    ball.position.y = windowHeight * 0.5;
-    ball.diameter = windowWidth * 0.025;
-    ball.radius = ball.diameter / 2;
 
     text.enter = {};
     text.enter.x = windowWidth * 0.5 - dialog.start_game.text.length;
@@ -125,20 +98,17 @@ function setup() {
     text.scoreboard.twoX = windowWidth * 0.5 + windowWidth * 0.05;
     text.scoreboard.y = windowHeight * 0.1;
 
-    if (Math.random() > 0.5) {
-        status.ball_movement.x = 1;
-        if (Math.random() > 0.5) status.ball_movement.y = -1;
-        else status.ball_movement.y = 1;
-    } else {
-        status.ball_movement.x = -1;
-        if (Math.random() > 0.5) status.ball_movement.y = -1;
-        else status.ball_movement.y = 1;
-    }
+    let LeftBracket = new Bracket(windowWidth * 0.05)
+    LeftBracket.controlled = true
+    LeftBracket.controls = [81, 65]
+    LeftBracket.goal = LeftBracket.x - LeftBracket.width / 4
+
+    let RightBracket = new Bracket(windowWidth * 0.9)
+    RightBracket.goal = RightBracket.x + RightBracket.width + RightBracket.width / 4
 }
 
 function draw() {
     background(colors.background);
-    BracketHandler.draw();
 };
 
 function keyPressed() {
@@ -155,24 +125,4 @@ function keyPressed() {
         case SHIFT:
             break;
     }
-};
-
-BracketHandler.draw = () => {
-    //Dividing line
-    fill(colors.alt);
-    stroke(100);
-    line(canvas.width * 0.5, 0, canvas.width * 0.5, canvas.height);
-    noStroke();
-    //Left side bracket
-    fill(colors.bracket_one, 100, 100);
-    rect(bracket.left.x, bracket.left.y, bracket.left.width, bracket.left.height);
-    //Right side bracket
-    fill(colors.bracket_two, 100, 100);
-    rect(bracket.right.x, bracket.right.y, bracket.right.width, bracket.right.height);
-};
-
-BallHandler.spawn = () => {
-    noStroke();
-    fill(colors.alt);
-    ellipse(ball.position.x, ball.position.y, ball.diameter);
 };

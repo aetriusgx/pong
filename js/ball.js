@@ -11,6 +11,7 @@ class Ball {
         this.speed = 1
         this.velocity = [this.speed, this.speed]
         this.exists = false
+        this.LastBracketHit;
         BallInstances.push(this);
     }
 
@@ -56,13 +57,26 @@ class Ball {
             }
             this.x += this.velocity[0]
             this.y += this.velocity[1]
+
+            //Where we get tags from
+            let _brackets = Bracket.GetInstances()
+            if(this.y >= _brackets.y && this.y <= _brackets.y + _brackets.height){
+                if(this.x <= _brackets.x) {
+                    this.velocity[0] = Math.abs(this.velocity[0])
+                }
+                if(this.x >= _brackets.x + _brackets.width){
+                    this.velocity[0] = -this.velocity[0]
+                }
+            }
         }
     }
 
     //Static Methods
     /**@returns {Ball} Returns all instances of Ball*/
     static GetInstances() {
-        BallInstances.forEach(balls => {if (balls instanceof Ball) return balls})
+        BallInstances.forEach(instance => {
+            if (instance instanceof Ball) return instance
+        })
     }
 
     static spawnEverything() {
@@ -74,6 +88,13 @@ class Ball {
     }
 
     static bounce() {
-        this.GetInstances().bounce()
+        let _ball = this.GetInstances()
+        let _bracket = Bracket.GetInstances()
+        _ball.bounce()
+        if(_bracket.goal){
+            
+        } else {
+            throw new Error(`${_bracket} has an undefined goal`)
+        }
     }
 }
