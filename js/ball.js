@@ -23,22 +23,6 @@ class Ball {
     set velocity(velocity) {
         this.velocity = [velocity[0], velocity[1]]
     }
-    /**@returns {number} The position of the ball on the x axis*/
-    get x() {
-        return this.x
-    }
-    /**@returns {number} The position of the ball on the y axis*/
-    get y() {
-        return this.y
-    }
-    /**@returns {number} (Private) The speed of the ball*/
-    get speed() {
-        return this.speed
-    }
-    /**@returns {Array} The velocity of the ball*/
-    get velocity() {
-        return this.velocity
-    }
 
     //Methods
     /**@param {?number} color (Optional) Sets the hue of the ball*/
