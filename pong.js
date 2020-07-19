@@ -66,46 +66,51 @@ let staticvalues = {
 function preload() {}
 
 function setup() {
+    //Create a canvas with the aspects of the window
     createCanvas(windowWidth, windowHeight);
     colorMode(HSB, 360, 100, 100);
 
+    //Let audio be playable
     status.audioCanPlay = true;
 
+    //Create two brackets
     new Bracket(width * 0.05, height * 0.5, colors.bracket_one, [87, 83]);
     new Bracket(width * 0.9, height * 0.5, colors.bracket_two);
 
+    //Create the base ball
+    //ONLY HERE FOR TESTING PURPOSES
     new Ball(width * 0.5, height * 0.5, width * 0.025, staticvalues.ball_speed);
 
 }
 
 function draw() {
+    //Change the background to the variable
     background(colors.background);
+    //Bracket functions
     Bracket.DisplayAllBrackets();
+    //Ball functions
     Ball.DisplayAllBalls();
 
+    //Add the divider line
     stroke('white');
     strokeWeight(3);
     line(width / 2, 0, width / 2, height);
 }
 
 class Bracket {
-    /**@param {number} x Position of the bracket on the x-axis
-     * @param {number} y Position of the bracket on the y-axis
-     * @param {number} color Hue of the bracket
-     * @param {?Array} controls (Optional) Array of the up and down controls*/
     constructor(x, y, color, controls) {
         //Positioning
         this.width = width * 0.025;
         this.height = height * 0.25;
         this.x = x;
-        this.y = y - this.height / 2;
+        this.y = y - this.height / 2; //For these brackets, the y means the midpoint of the bracket instead of the top
 
         //Shape
         this.color = color;
         this.points;
 
         //Controls
-        if (controls) this.controllable = true, this.controls = controls;
+        if (controls) this.controllable = true, this.controls = controls; //If a control array was given
         else this.controllable = false, this.controls = null;
 
         //Operational
@@ -113,35 +118,35 @@ class Bracket {
     }
 
     draw() {
-        noStroke();
-        fill(this.color, 100, 80);
-        rect(this.x, this.y, this.width, this.height);
-        this.points = [this.x, this.y, this.width, this.height];
+        noStroke(); //Get rid of the border
+        fill(this.color, 100, 80); //Change the color of the bracket
+        rect(this.x, this.y, this.width, this.height); //Draw the bracket
+        this.points = [this.x, this.y, this.width, this.height]; //DEBUGGING ONLY
     }
 
     move() {
-        if (this.controllable) {
-            if (keyIsDown(this.controls[0])) this.y -= staticvalues.player_movement;
-            if (keyIsDown(this.controls[1])) this.y += staticvalues.player_movement;
+        if (this.controllable) { //If the bracket is controllable
+            if (keyIsDown(this.controls[0])) this.y -= staticvalues.player_movement; //Up key, subtract from the y by the movement speed
+            if (keyIsDown(this.controls[1])) this.y += staticvalues.player_movement; //Down key, add to the y by the movement speed
         } else {
-            let midpoint = this.y + this.height / 2;
-            for (var ball of Ball.instances) {
-                if (ball.velocity[0] > 0) {
-                    if (ball.y > midpoint) this.y += staticvalues.bot_movement;
-                    if (ball.y <= midpoint) this.y -= staticvalues.bot_movement;
+            let midpoint = this.y + this.height / 2; //The bracket's midpoint
+            for (var ball of Ball.instances) { //Gather all the instances of the static array from ball class
+                if (ball.velocity[0] > 0) { //Static for just the right side at the moment, checks if the ball's velocity is towards the right
+                    if (ball.y > midpoint) this.y += staticvalues.bot_movement; //Move the bracket down if the ball's y value is less than the midpoint
+                    if (ball.y <= midpoint) this.y -= staticvalues.bot_movement; //Vice versa ^^
                 }
             }
         }
     }
 
-    restrictYOverflow() {
-        if (this.y <= 0) this.y = 0;
-        if (this.y + this.height >= height) this.y = height - this.height;
+    restrictYOverflow() { 
+        if (this.y <= 0) this.y = 0; //If the bracket's y is less or equal to 0 then force the bracket's y to be 0
+        if (this.y + this.height >= height) this.y = height - this.height; //If the bracket is beyond the canvas height, force it to flush the bottom
     }
 
-    static instances = [];
+    static instances = []; //Array for the class instances because it's not built in for some reason
 
-    static DisplayAllBrackets() {
+    static DisplayAllBrackets() { //Loop through the array and run all the methods
         for (var bracket of this.instances) {
             bracket.draw();
             bracket.move();
@@ -160,20 +165,21 @@ class Ball {
         this.speed = speed;
         this.velocity = [];
 
+        //The x and y velocity are random when they are initiated
         let chance = Math.random();
         if (chance < 0.5) this.velocity[0] = -this.speed;
         if (chance >= 0.5) this.velocity[0] = this.speed;
         if (chance > 0.25 && chance <= 0.75) this.velocity[1] = -this.speed;
         if (chance <= 0.25 || chance > 0.75) this.velocity[1] = this.speed;
 
-        Ball.instances.push(this);
+        Ball.instances.push(this); //Push this instance to the instance array
     }
 
     draw() {
-        fill(100);
-        ellipse(this.x, this.y, this.radius);
+        fill(100); //Change color to white, temporary atm
+        ellipse(this.x, this.y, this.radius); //Draw the ball as an ellipse
 
-        if (this.x < 0 || this.x > width) {
+        if (this.x < 0 || this.x > width) { //CURRENTLY A TEMPORARY IF STATEMENT
             this.y = height / 2;
             this.x = width / 2;
             let chance = Math.random();
@@ -184,32 +190,34 @@ class Ball {
         }
     }
 
-    move() {
+    move() { //Move's the ball according to the velocity array
         this.x += this.velocity[0];
         this.y += this.velocity[1];
-        if (this.y <= 0 || this.y >= height) {
+        if (this.y <= 0 || this.y >= height) { //Let's the ball bounce when it hit's the top and bottom
             this.velocity[1] *= -1;
         }
     }
 
     collision() {
-        for(var bracket of Bracket.instances){
+        for(var bracket of Bracket.instances){ //Go through each instance of Bracket
+            /**@todo Check for the corners */
+            //Use the 2D collision library to check if a ball hit's a bracket
             let check = collideRectCircle(bracket.x, bracket.y, bracket.width, bracket.height, this.x, this.y, this.radius);
-            //West and East
+            //West and East side of the bracket
             if(this.y >= bracket.y && this.y <= bracket.y + bracket.height){
-                if(check) this.velocity[0] *= -1;
+                if(check) this.velocity[0] *= -1; //Flips the x-velocity
             }
             
-            //North and South
+            //North and South side of the bracket
             if(this.x >= bracket.x && this.x <= bracket.x + bracket.width){
-                if(check) this.velocity[1] *= -1;
+                if(check) this.velocity[1] *= -1; //Flips the y-velocity
             }
         }
     }
 
-    static instances = [];
+    static instances = []; //Array for the class instances because it's not built it for some reason
 
-    static DisplayAllBalls() {
+    static DisplayAllBalls() { //Runs every method for each ball
         for (var ball of this.instances) {
             ball.draw();
             ball.move();
